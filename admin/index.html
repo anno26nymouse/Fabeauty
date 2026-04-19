@@ -2,7 +2,6 @@
 <html lang="id">
 <head>
 
-<!-- PWA -->
 <link rel="manifest" href="../manifest.json">
 <meta name="theme-color" content="#F8C8DC">
 
@@ -15,67 +14,63 @@
 <title>Admin Dashboard</title>
 
 <style>
-body {
-  font-family: Arial;
-  margin: 0;
-  background: #fff;
-}
+body { font-family: Arial; margin:0; background:#fff; }
 
 .header {
-  background: #F8C8DC;
-  padding: 15px;
-  text-align: center;
-  font-weight: bold;
+  background:#F8C8DC;
+  padding:15px;
+  text-align:center;
+  font-weight:bold;
 }
 
 .container {
-  max-width: 1100px;
-  margin: auto;
-  padding: 20px;
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
 }
 
 .card {
-  background: #FDE2E4;
-  padding: 20px;
-  border-radius: 15px;
-  margin-bottom: 20px;
+  background:#FDE2E4;
+  padding:20px;
+  border-radius:15px;
+  margin-bottom:20px;
 }
 
 input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+  border-radius:10px;
+  border:1px solid #ddd;
 }
 
 button {
-  padding: 10px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  margin:3px;
 }
 
-.btn-primary {
-  background: #E6A4B4;
-  color: white;
-}
+.btn-primary { background:#E6A4B4; color:white; }
+.btn-edit { background:#4dabf7; color:white; }
+.btn-delete { background:#ff6b6b; color:white; }
 
 #list {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
 }
 
 .product {
-  background: white;
-  padding: 10px;
-  border-radius: 10px;
+  background:white;
+  padding:10px;
+  border-radius:10px;
 }
 
 .product img {
-  width: 100%;
-  border-radius: 10px;
+  width:100%;
+  border-radius:10px;
 }
 </style>
 
@@ -94,11 +89,11 @@ button {
     <input id="price" type="number" placeholder="Harga">
     <input type="file" id="file">
 
-    <button class="btn-primary" onclick="addProduct()">Tambah</button>
+    <button class="btn-primary" onclick="addProduct()">Tambah Produk</button>
   </div>
 
   <div class="card">
-    <h3>List Produk</h3>
+    <h3>Daftar Produk</h3>
     <div id="list"></div>
   </div>
 
@@ -118,13 +113,14 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// ADD PRODUCT
+
+// =================== TAMBAH PRODUK ===================
 async function addProduct() {
   const name = document.getElementById("name").value;
   const price = document.getElementById("price").value;
   const file = document.getElementById("file").files[0];
 
-  if (!file) return alert("Pilih gambar dulu!");
+  if (!file) return alert("Upload gambar dulu!");
 
   const formData = new FormData();
   formData.append("file", file);
@@ -147,11 +143,13 @@ async function addProduct() {
   alert("Produk ditambahkan!");
 }
 
-// LOAD DATA
+
+// =================== LOAD PRODUK ===================
 function loadProducts() {
   db.collection("products")
     .orderBy("createdAt", "desc")
     .onSnapshot(snapshot => {
+
       const list = document.getElementById("list");
       list.innerHTML = "";
 
@@ -159,16 +157,60 @@ function loadProducts() {
         const p = doc.data();
 
         list.innerHTML += `
-          <div class="product">
+          <div class="product" id="${doc.id}">
             <img src="${p.mediaUrl}">
             <b>${p.name}</b><br>
             Rp${p.price}
+
+            <div>
+              <button class="btn-edit" onclick="editProduct('${doc.id}', '${p.name}', '${p.price}')">Edit</button>
+              <button class="btn-delete" onclick="deleteProduct('${doc.id}')">Hapus</button>
+            </div>
           </div>
         `;
       });
     });
 }
 
+
+// =================== HAPUS PRODUK ===================
+async function deleteProduct(id) {
+  if (!confirm("Yakin mau hapus?")) return;
+  await db.collection("products").doc(id).delete();
+}
+
+
+// =================== EDIT PRODUK ===================
+function editProduct(id, name, price) {
+  const el = document.getElementById(id);
+
+  el.innerHTML = `
+    <div style="padding:10px">
+      <input id="edit-name-${id}" value="${name}">
+      <input id="edit-price-${id}" value="${price}">
+
+      <button class="btn-primary" onclick="saveEdit('${id}')">Simpan</button>
+      <button onclick="loadProducts()">Cancel</button>
+    </div>
+  `;
+}
+
+
+// =================== SAVE EDIT ===================
+async function saveEdit(id) {
+  const name = document.getElementById(`edit-name-${id}`).value;
+  const price = document.getElementById(`edit-price-${id}`).value;
+
+  await db.collection("products").doc(id).update({
+    name,
+    price
+  });
+
+  loadProducts();
+}
+
+
+// INIT
 loadProducts();
 </script>
 
@@ -176,12 +218,12 @@ loadProducts();
 <script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("../sw.js", {
-    scope: "/Fabeauty/"
+    scope: "/Fabeauty/admin/"
   })
   .then(() => console.log("SW OK"))
-  .catch(err => console.log("SW ERROR:", err));
+  .catch(err => console.log("SW ERROR", err));
 }
 </script>
 
 </body>
-</html>
+  </html>
