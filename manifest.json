@@ -1,6 +1,6 @@
 {
   "name": "Admin Dashboard Ketul",
-  "short_name": "Admin",
+  "short_name": "admin",
   "start_url": "/Fabeauty/admin/index.html",
   "scope": "/Fabeauty/admin/",
   "display": "standalone",
