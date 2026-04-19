@@ -2,7 +2,7 @@
   "name": "Admin Dashboard Ketul",
   "short_name": "Admin",
   "start_url": "/Fabeauty/admin/index.html",
-  "scope": "/repo/admin/",
+  "scope": "/Fabeauty/admin/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#F8C8DC",
