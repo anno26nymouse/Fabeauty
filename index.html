@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fabeauty Nailart Premium</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Montserrat:wght@300;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --pink-primary: #E6A4B4;
+            --pink-light: #FDE2E4;
+            --pink-border: #F8C8DC;
+            --shadow-3d: 0 10px 25px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.05), inset 0 -2px 0 #F8C8DC;
+            --glass: rgba(255, 255, 255, 0.85);
+            /* OPTIMASI: Variable untuk jumlah karakter "STUDIO COLLECTION" (17 karakter) */
+            --chars: 17; 
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Montserrat', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        *:focus { outline: none; }
+
+        body {
+            background: #F3F0F2;
+            color: #333;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 60px;
+        }
+
+        /* ================= HEADER 3D ================= */
+        header {
+            position: sticky;
+            top: 20px;
+            margin: 0 15px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(255,255,255,0.75));
+            backdrop-filter: blur(14px);
+            padding: 10px 5px;
+            border: 1.5px solid var(--pink-border);
+            border-radius: 25px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.8);
+            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        header.scrolled {
+            top: 0;
+            margin: 0;
+            border-radius: 0 0 25px 25px;
+            background: var(--glass);
+        }
+
+        .brand-container {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-preview {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--pink-primary);
+            margin-left: 15px;
+            filter: drop-shadow(0 0 8px rgba(230, 164, 180, 0.4));
+            transition: 0.3s;
+        }
+
+        .premium-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ================= ANIMASI SVG & TEXT OPTIMIZED ================= */
+        .premium-svg-container { width: 240px; }
+
+        .custom-path {
+            fill: transparent;
+            stroke: #000;
+            stroke-width: 0.15;
+            stroke-dasharray: 2000;
+            stroke-dashoffset: 2000;
+        }
+
+        @keyframes drawSVG { to { stroke-dashoffset: 0; } }
+        @keyframes fillSVG { 
+            from { fill: transparent; } 
+            to { fill: var(--pink-primary); } 
+        }
+
+        .section-title {
+            letter-spacing: 4px; /* Sedikit dirapatkan agar stabil di mobile */
+            color: #000;
+            font-size: 10px;
+            font-weight: 800;
+            margin-top: -5px;
+            opacity: 0.7;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 2px solid var(--pink-primary);
+            width: 0;
+            will-change: width; /* Optimasi render mobile */
+        }
+
+        /* Animasi  menggunakan satuan ch agar presisi per karakter */
+        .section-title {
+    display: inline-block;
+    letter-spacing: 9px;
+    color: black;
+    font-size: 10px;
+    font-weight: 800;
+    margin-top: -5px;
+    opacity: 0.8;
+    transform: translateX(22px);
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid black;
+    margin-left: -25px;
+
+    width: 0;
+}
+.section-title.typing {
+    animation: typing 3s steps(17, end) forwards,
+               blink 0.7s infinite;
+}
+
+.section-title.done {
+    animation: none;
+    width: 40ch;
+    border-right: none;
+}
+@keyframes typing {
+    from { width: 0 }
+    to { width: 40ch }
+}
+
+@keyframes blink {
+    50% { border-color: transparent }
+}
+
+
+        /* ================= GRID SISTEM ================= */
+        main { padding: 30px 15px; }
+
+        .collection-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            max-width: 800px;
+            margin: auto;
+        }
+
+        /* ================= CARD 3D EFFECT ================= */
+        .card { perspective: 1000px; height: 260px; cursor: pointer; }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .card.flip .card-inner { transform: rotateY(180deg); }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 18px;
+            backface-visibility: hidden;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            border: 1px solid rgba(230,164,180,0.2);
+        }
+
+        .card-front img { width: 100%; height: 100%; object-fit: cover; }
+
+        .product-badge {
+            position: absolute;
+            top: 10px; left: 10px;
+            background: var(--pink-primary);
+            color: #fff;
+            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: 800;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .btn-preview {
+            position: absolute;
+            bottom: 12px; left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.9);
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--pink-primary);
+            border: 1px solid var(--pink-primary);
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #FDE2E4, #F8C8DC);
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .price { font-weight: 800; font-size: 15px; margin-bottom: 15px; color: #444; }
+
+        .btn-order {
+            background: var(--pink-primary);
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+            box-shadow: 0 4px 10px rgba(230, 164, 180, 0.4);
+        }
+
+        /* ================= FLOATING BAR ================= */
+        .floating-bar {
+            position: fixed;
+            bottom: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 1px solid var(--pink-border);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            z-index: 999;
+        }
+
+        .float-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: #fff;
+            border: 1px solid var(--pink-primary);
+            color: var(--pink-primary);
+            transition: 0.3s;
+        }
+
+        .icon { width: 18px; height: 18px; fill: currentColor; }
+        .float-btn.ig:hover { background: #E1306C; color: #fff; }
+        .float-btn.loc:hover { background: #EA4335; color: #fff; }
+        .float-btn.wa:hover { background: #25D366; color: #fff; }
+
+        /* ================= FOOTER ================= */
+        footer {
+            position: fixed;
+            bottom: 0; width: 100%;
+            height: 35px;
+            background: var(--glass);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+            border-top: 1px solid var(--pink-border);
+            transform: translateY(100%);
+            transition: 0.4s;
+            z-index: 1000;
+        }
+        footer.show { transform: translateY(0); }
+
+        /* ================= MODAL ================= */
+        .preview-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+            z-index: 2000;
+        }
+        .preview-modal.active { opacity: 1; pointer-events: all; }
+        .preview-modal img { max-width: 90%; max-height: 80%; border-radius: 15px; }
+    </style>
+</head>
+
+<body>
+
+<header id="mainHeader">
+    <div class="brand-container">
+        <img src="logo.jpg" class="logo-preview" alt="Logo" onclick="openPreview(event, 'logo.png')">
+        <div class="premium-group">
+            <svg class="premium-svg-container" viewBox="0 0 250 65">
+                <path class="custom-path" id="logoPath" d="M0.85 46.25Q0.40 46.25 0.20 45.67Q0 45.10 0 44.75Q0 44.40 0.25 44.10Q0.50 43.80 0.85 43.80L38.05 43.80Q38.60 43.80 39.00 44.25Q39.40 44.70 39.45 45.20L39.15 45.55Q35.60 45.55 31.73 45.60Q27.85 45.65 24.15 45.70Q20.45 45.75 17.45 45.80Q14.45 45.85 12.60 45.90Q10.75 45.95 10.60 45.95Q8.40 46 5.88 46.13Q3.35 46.25 0.85 46.25ZM59.25 49.10Q54.40 49.10 50.65 47.22Q46.90 45.35 44.78 42.07Q46.90 45.35 44.78 42.07Q42.65 38.80 42.65 34.65Q42.65 32.05 43.55 29.30Q44.05 27.85 45.00 26.75Q45.95 25.65 47.00 24.95Q48.05 24.25 48.80 24.05Q49.35 23.90 49.50 23.90Q49.85 23.90 49.28 24.37Q48.70 24.85 47.85 25.40Q46.90 26.05 45.65 27.35Q44.40 28.65 43.95 31.20Q43.85 31.80 43.80 32.40Q43.75 33 43.75 33.55Q43.75 36.80 45.23 39.27Q46.70 41.75 49.05 43.40Q51.40 45.05 54.18 45.90Q56.95 46.75 59.50 46.75Q63.55 46.75 67 45.17Q70.45 43.60 73.33 40.85Q76.20 38.10 78.50 34.52Q80.80 30.95 82.55 26.95Q82.15 26.95 81.40 26.92Q80.65 26.90 79.75 26.90Q78.40 26.90 76.83 27.07Q75.25 27.25 73.88 27.82Q72.50 28.40 71.65 29.60Q71.35 29.95 71.10 29.95Q70.90 29.95 70.80 29.70Q70.70 29.45 70.85 29.15Q72.05 26.50 74.15 25.55Q76.25 24.60 78.85 24.60Q79.95 24.60 81.08 24.72Q82.20 24.85 83.30 25.05Q84.20 22.90 85.30 20.75Q86.40 18.60 87.45 16.75Q88.50 14.90 89.35 13.62Q90.20 12.35 90.55 11.95Q87.35 10.35 83.95 9.00Q80.55 7.65 76.85 7.15Q76.10 7.05 75.35 7.00Q74.60 6.95 73.90 6.95Q70.60 6.95 68 8.00Q65.40 9.05 63.60 10.67Q61.80 12.30 60.85 14.12Q59.90 15.95 59.90 17.55Q59.90 19.65 61.40 20.55Q62.30 21.10 63.23 21.35Q64.15 21.60 65 21.60Q66.90 21.60 68.45 20.80Q70 20.00 70.93 19.02Q71.85 18.05 71.85 17.55Q71.85 17.05 72.15 16.67Q72.45 16.30 72.65 16.30Q72.85 16.30 72.85 16.65Q72.85 16.90 72.70 17.35Q71.95 19.95 69.68 21.32Q67.40 22.70 64.90 22.70Q63.85 22.70 62.83 22.45Q61.80 22.20 60.90 21.70Q59.25 20.75 58.45 19.27Q57.65 17.80 57.65 16.10Q57.65 14.15 58.65 12.07Q59.65 10.00 61.53 8.27Q63.40 6.55 66.05 5.47Q68.70 4.40 72.05 4.40Q74.60 4.40 77.75 5.25Q81.90 6.35 85.40 7.97Q88.90 9.60 91.20 11.05Q91.55 10.65 92.35 10.00Q93.15 9.35 94.40 9.35Q94.85 9.35 95.45 9.50Q95.90 9.65 96.13 10.00Q96.35 10.35 96.35 10.70Q96.35 11.15 96.05 11.15Q95.85 11.15 95.45 10.70Q95.10 10.55 94.70 10.55Q94.05 10.55 93.45 10.90Q92.85 11.25 92.40 11.65Q93.30 12.10 94.78 12.70Q96.25 13.30 98.05 13.90Q99.85 14.50 101.68 14.87Q103.50 15.25 105.05 15.25Q106.35 15.25 107.40 14.90Q108.45 14.55 108.90 13.60Q109.30 12.65 109.65 12.65Q109.90 12.65 109.90 13.20Q109.90 13.35 109.90 13.50Q109.90 13.65 109.85 13.80Q109.65 15.15 108.20 16.07Q106.75 17.00 104.70 17.00Q104.40 17.00 104.08 16.97Q103.75 16.95 103.40 16.90Q100.50 16.40 98 15.45Q95.50 14.50 93.83 13.65Q92.15 12.80 91.65 12.60Q90.05 14.40 88.80 16.80Q87.55 19.20 86.63 21.55Q85.70 23.90 84.95 25.55Q86.50 25.75 88.33 25.82Q90.15 25.90 91.75 25.90Q92.55 25.90 93.23 25.87Q93.90 25.85 94.40 25.85L94.70 25.85Q95.70 25.85 95.70 26.20Q95.70 26.55 94.55 26.85Q93.80 27.05 92.03 27.15Q90.25 27.25 88.35 27.25Q87.20 27.25 86.15 27.20Q85.10 27.15 84.35 27.05Q83.30 29.90 81.95 32.95Q80.60 36 78.68 38.88Q76.75 41.75 74.08 44.07Q71.40 46.40 67.75 47.75Q64.10 49.10 59.25 49.10ZM106.40 42.70Q105.85 42.75 105.15 42.45Q104.45 42.15 103.93 41.35Q103.40 40.55 103.40 39.10Q103.40 37.90 103.85 36.20Q103.25 37.15 102.30 38.52Q101.35 39.90 100.25 40.95Q99.30 41.85 98.45 42.25Q97.60 42.65 96.90 42.65Q95.60 42.65 94.80 41.47Q94.00 40.30 94.00 38.40Q94.00 36.40 95.00 33.85Q96.00 31.30 98.25 28.55Q99.70 26.80 101.78 25.72Q103.85 24.65 105.85 24.65Q107.00 24.65 108.05 25.02Q109.10 25.40 109.90 26.25Q110.25 26.60 110.25 27.05Q110.25 27.35 110.00 27.55Q109.75 27.75 109.35 27.65Q108.80 25.90 107.00 25.90Q106.15 25.90 105.05 26.45Q103.35 27.35 101.53 29.40Q99.70 31.45 98.35 33.65Q98.15 33.95 97.73 34.80Q97.30 35.65 96.90 36.70Q96.50 37.75 96.35 38.75Q96.30 39.05 96.30 39.17Q96.30 39.30 96.30 39.55Q96.30 41.20 97.55 41.20Q99.05 41.20 100.95 39Q102.25 37.40 103.30 35.65Q104.35 33.90 105.45 31.90Q106.20 30.55 106.85 29.65Q107.50 28.75 108.70 28.75Q109.25 28.75 109.80 28.90Q110.35 29.05 110.95 28.95Q110.55 29.35 109.88 30.45Q109.20 31.55 108.45 32.95Q107.70 34.35 107.10 35.80Q106.50 37.25 106.25 38.30Q106.20 38.60 106.13 39.15Q106.05 39.70 106.05 39.95Q106.05 41.35 106.85 41.35Q107.65 41.35 108.58 40.40Q109.50 39.45 110.40 38.05Q111.30 36.65 112.05 35.22Q112.80 33.80 113.25 32.90Q113.45 32.40 113.85 32.40Q114.10 32.40 114.10 32.75Q114.10 32.90 113.95 33.30Q113.35 34.55 112.50 36.13Q111.65 37.70 110.65 39.17Q109.65 40.65 108.58 41.63Q107.50 42.60 106.40 42.70ZM116.80 42.60Q114.65 42.60 113.60 41.50Q112.55 40.40 112.55 38.75Q112.55 37.95 112.75 37.20Q113.05 36.05 113.63 34.63Q114.20 33.20 114.95 31.70Q113.20 35.10 111.78 37.42Q110.35 39.75 109.60 40.45Q109.45 40.60 109.30 40.60Q109.05 40.60 109.05 40.35Q109.05 40.15 109.20 39.95Q110.25 38.55 111.63 36.10Q113 33.65 114.55 30.62Q116.10 27.60 117.70 24.50Q119.30 21.40 120.83 18.65Q122.35 15.90 123.60 14.00Q124.50 12.65 125.30 12.07Q126.10 11.50 126.95 11.50L127.20 11.50Q127.65 11.50 128.22 11.65Q128.80 11.80 129.30 11.70Q128.65 12.40 127.33 14.17Q126 15.95 124.38 18.32Q122.75 20.70 121.13 23.32Q119.50 25.95 118.25 28.45Q117.05 30.85 116.13 33.57Q115.20 36.30 115.20 38.35Q115.20 39.55 115.60 40.35Q116 41.15 116.95 41.35Q118.55 41.70 121.25 38.50Q122.30 37.25 123.35 35.52Q124.40 33.80 125 32.30Q125.85 30.30 125.85 28.65Q125.85 27.40 125.23 26.65Q124.60 25.90 123.15 26.05L122.95 26.05Q122.05 26.05 122.05 25.55Q122.05 25.35 122.33 25.15Q122.60 24.95 123.10 24.95Q123.25 24.95 123.43 24.97Q123.60 25.00 123.80 25.05Q126.05 25.40 127.03 26.87Q128 28.35 128 30.25Q128 30.65 127.95 31.12Q127.90 31.60 127.80 32.15Q127.40 34.20 126.25 36.32Q125.10 38.45 123.43 40.05Q121.75 41.65 119.70 42.20Q118.85 42.40 118.13 42.50Q117.40 42.60 116.80 42.60ZM134.10 42.75Q132.25 42.75 130.78 41.55Q129.30 40.35 129.30 37.90Q129.30 35.65 130.40 33.07Q131.50 30.50 133.20 28.55Q134.65 26.85 136.45 25.75Q138.25 24.65 139.85 24.65Q140.95 24.65 141.75 25.25Q142.60 25.90 142.60 27.10Q142.60 28.35 141.65 29.85Q140.70 31.35 138.95 32.65Q138.20 33.20 137.05 33.70Q135.90 34.20 134.75 34.52Q133.60 34.85 132.85 34.85Q132.60 35.45 132.38 36.45Q132.15 37.45 132.15 38.50Q132.15 39.75 132.65 40.75Q133.15 41.75 134.50 41.75Q136.15 41.75 137.50 40.80Q138.85 39.85 139.90 38.42Q140.95 37 141.68 35.55Q142.40 34.10 142.85 33.10Q143.15 32.40 143.65 32.40Q143.90 32.40 143.90 32.65Q143.90 32.85 143.75 33.15Q143.05 34.65 142.25 36.32Q141.45 38 140.35 39.47Q139.25 40.95 137.72 41.85Q136.20 42.75 134.10 42.75M133.20 33.95Q133.90 33.95 135.55 33.42Q137.20 32.90 138.55 31.75Q139.85 30.60 140.55 29.22Q141.25 27.85 141.25 26.90Q141.25 25.80 140.45 25.80Q139.85 25.80 138.80 26.60Q137.75 27.40 136.20 29.30Q135.25 30.50 134.40 31.90Q133.55 33.30 133.20 33.95ZM153.75 42.70Q153.20 42.75 152.50 42.45Q151.80 42.15 151.28 41.35Q150.75 40.55 150.75 39.10Q150.75 37.90 151.20 36.20Q150.60 37.15 149.65 38.52Q148.70 39.90 147.60 40.95Q146.65 41.85 145.80 42.25Q144.95 42.65 144.25 42.65Q142.95 42.65 142.15 41.47Q141.35 40.30 141.35 38.40Q141.35 36.40 142.35 33.85Q143.35 31.30 145.60 28.55Q147.05 26.80 149.13 25.72Q151.20 24.65 153.20 24.65Q154.35 24.65 155.40 25.02Q156.45 25.40 157.25 26.25Q157.60 26.60 157.60 27.05Q157.60 27.35 157.35 27.55Q157.10 27.75 156.70 27.65Q156.15 25.90 154.35 25.90Q153.50 25.90 152.40 26.45Q150.70 27.35 148.88 29.40Q147.05 31.45 145.70 33.65Q145.50 33.95 145.08 34.80Q144.65 35.65 144.25 36.70Q143.85 37.75 143.70 38.75Q143.65 39.05 143.65 39.17Q143.65 39.30 143.65 39.55Q143.65 41.20 144.90 41.20Q146.40 41.20 148.30 39Q149.60 37.40 150.65 35.65Q151.70 33.90 152.80 31.90Q153.55 30.55 154.20 29.65Q154.85 28.75 156.05 28.75Q156.60 28.75 157.15 28.90Q157.70 29.05 158.30 28.95Q157.90 29.35 157.22 30.45Q156.55 31.55 155.80 32.95Q155.05 34.35 154.45 35.80Q153.85 37.25 153.60 38.30Q153.55 38.60 153.47 39.15Q153.40 39.70 153.40 39.95Q153.40 41.35 154.20 41.35Q155 41.35 155.93 40.40Q156.85 39.45 157.75 38.05Q158.65 36.65 159.40 35.22Q160.15 33.80 160.60 32.90Q160.80 32.40 161.20 32.40Q161.45 32.40 161.45 32.75Q161.45 32.90 161.30 33.30Q160.70 34.55 159.85 36.13Q159 37.70 158 39.17Q157 40.65 155.93 41.63Q154.85 42.60 153.75 42.70ZM162.15 42.55Q161.60 42.55 160.82 42.30Q160.05 42.05 159.47 41.38Q158.90 40.70 158.90 39.35Q158.90 38.05 159.53 36.82Q160.15 35.60 160.70 34.45Q160.55 34.45 160.38 34.35Q160.20 34.25 160.20 34.05Q160.20 33.85 160.30 33.65Q160.50 33.25 160.75 32.80Q161 32.35 161.20 31.85Q161.95 30.30 162.70 28.87Q163.45 27.45 164 26.35Q164.55 25.25 165.90 25.25L169 25.25Q168.15 25.90 167.47 26.67Q166.80 27.45 165.80 29.50Q165.80 29.50 165.45 30.20Q165.10 30.90 164.57 31.97Q164.05 33.05 163.53 34.15Q163 35.25 162.65 36Q162 37.40 161.80 38.22Q161.60 39.05 161.60 39.75Q161.60 41.40 162.70 41.40Q163.90 41.40 165.60 39.45Q167 37.80 168.35 35.50Q169.70 33.20 170.93 30.75Q172.15 28.30 173.10 26.35Q173.65 25.25 175.05 25.25L177.80 25.25Q177.05 25.85 176.55 26.37Q176.05 26.90 175.57 27.77Q175.10 28.65 174.30 30.25Q173.65 31.60 172.93 33.13Q172.20 34.65 171.65 36Q171.10 37.35 170.95 38.20Q170.90 38.70 170.85 38.95Q170.80 39.20 170.80 39.50Q170.80 40.45 171.13 40.85Q171.45 41.25 171.90 41.25Q173.10 41.25 174.32 39.90Q175.55 38.55 176.68 36.60Q177.80 34.65 178.60 32.90Q178.90 32.35 179.15 32.35Q179.45 32.35 179.45 32.70Q179.45 32.95 179.25 33.30Q178.70 34.50 177.90 36.05Q177.10 37.60 176.10 39.10Q175.10 40.60 173.90 41.57Q172.70 42.55 171.30 42.55Q170.05 42.55 169.25 41.63Q168.45 40.70 168.45 39Q168.45 37.65 168.95 36.10Q168.10 37.60 167 39.10Q165.90 40.60 164.65 41.57Q163.40 42.55 162.15 42.55ZM180.95 42.55Q179.55 42.55 178.45 41.57Q177.35 40.60 177.35 38.50Q177.35 36.85 177.97 34.42Q178.60 32.00 179.52 29.37Q180.45 26.75 181.35 24.60L178.70 24.60Q178.35 24.60 178.35 24.10Q178.35 23.85 178.47 23.65Q178.60 23.45 178.85 23.45L181.85 23.45Q182.70 21.55 183.65 19.75Q184.60 17.95 185.50 16.35Q186.65 14.35 187.95 13.35Q189.25 12.35 190.20 12.35Q190.95 12.35 191.45 12.92Q191.95 13.50 191.95 14.65Q191.95 15.35 191.65 16.57Q191.35 17.80 190.70 19.15Q190.35 19.85 189.72 21.15Q189.10 22.45 188.50 23.45L190.90 23.45Q191.25 23.45 191.25 23.95Q191.25 24.15 191.15 24.37Q191.05 24.60 190.85 24.60L187.90 24.60Q186.65 26.75 185.05 28.80Q183.45 30.85 181.25 32.90Q181.10 33.35 180.88 34.20Q180.65 35.05 180.47 35.92Q180.30 36.80 180.17 37.40Q180.05 38 180.05 38Q179.90 38.65 179.90 39.20Q179.90 40.25 180.40 40.72Q180.90 41.20 181.55 41.20Q181.95 41.20 182.35 41.07Q182.75 40.95 183.25 40.60Q185 39.35 186.32 37.20Q187.65 35.05 188.65 33.05Q188.95 32.45 189.25 32.45Q189.45 32.45 189.45 32.75Q189.45 32.90 189.30 33.30Q188.20 35.60 187.45 37Q186.70 38.40 186 39.32Q185.30 40.25 184.35 41.15Q183.65 41.85 182.75 42.20Q181.85 42.55 180.95 42.55M184.90 23.45L187.45 23.45Q188.15 22.15 188.77 20.90Q189.40 19.65 189.90 18.40Q190.25 17.60 190.50 16.60Q190.75 15.60 190.75 15.05Q190.75 14.30 190.40 14.30Q190.15 14.30 189.67 14.72Q189.20 15.15 188.50 16.15Q187.60 17.40 186.72 19.37Q185.85 21.35 184.90 23.45M181.65 31.30Q183.10 29.80 184.38 28.10Q185.65 26.40 186.75 24.60L184.40 24.60Q183.60 26.45 182.90 28.20Q182.20 29.95 181.65 31.30ZM181.80 58.50Q179.20 58.50 178.10 57.47Q177 56.45 177 55.05Q177 54.30 177.20 53.75Q177.40 53.20 177.80 52.35Q178.50 50.90 179.75 49.85Q181 48.80 182.45 48.15Q185.05 46.95 188.38 46.20Q191.70 45.45 194.75 44.55Q195.70 42.90 196.50 40.77Q197.30 38.65 197.95 36.63Q198.60 34.60 199 33.30Q198.40 34.40 197.47 35.97Q196.55 37.55 195.40 39.05Q194.25 40.55 192.93 41.55Q191.60 42.55 190.15 42.55Q189.60 42.55 188.82 42.30Q188.05 42.05 187.47 41.38Q186.90 40.70 186.90 39.35Q186.90 38.05 187.53 36.82Q188.15 35.60 188.70 34.45Q188.55 34.45 188.38 34.35Q188.20 34.25 188.20 34.05Q188.20 33.85 188.30 33.65Q188.50 33.25 188.75 32.80Q189 32.35 189.20 31.85Q189.95 30.30 190.70 28.87Q191.45 27.45 192 26.35Q192.55 25.25 193.90 25.25L197 25.25Q196.65 25.55 196.13 25.92Q195.60 26.30 195.15 27.05Q193.80 29.35 192.80 31.47Q191.80 33.60 190.65 36Q190.10 37.15 189.85 38.10Q189.60 39.05 189.60 39.75Q189.60 41.40 190.70 41.40Q191.90 41.40 193.60 39.45Q195 37.80 196.43 35.52Q197.85 33.25 199.18 30.82Q200.50 28.40 201.50 26.35Q202.05 25.25 203.45 25.25L206.20 25.25Q204.75 26.25 203.97 27.85Q203.20 29.45 202.25 31.95Q201.20 34.70 200.28 37.63Q199.35 40.55 198.20 43.50Q199.85 42.95 201.93 41.80Q204 40.65 205.45 38.50Q206.60 36.80 207.43 35.22Q208.25 33.65 208.60 32.95Q208.80 32.45 209.15 32.45Q209.50 32.45 209.50 32.90Q209.50 33.15 209.35 33.45Q208.05 36.05 207.03 37.82Q206 39.60 204.78 40.88Q203.55 42.15 201.80 43.13Q200.05 44.10 197.35 45.10Q196.15 47.25 194.63 49.57Q193.10 51.90 191.18 53.92Q189.25 55.95 186.93 57.22Q184.60 58.50 181.80 58.50M180.60 57.50Q182.25 57.50 184 56.50Q185.75 55.50 187.40 53.97Q189.05 52.45 190.43 50.88Q191.80 49.30 192.65 48.10Q192.90 47.75 193.20 47.20Q193.50 46.65 193.80 46.15Q191.35 46.80 188.43 47.57Q185.50 48.35 183.35 49.30Q180.95 50.30 179.57 52.15Q178.20 54 178.20 55.45Q178.20 56.35 178.78 56.92Q179.35 57.50 180.60 57.50ZM207.05 46.25Q206.60 46.25 206.40 45.67Q206.20 45.10 206.20 44.75Q206.20 44.40 206.45 44.10Q206.70 43.80 207.05 43.80L244.25 43.80Q244.80 43.80 245.20 44.25Q245.60 44.70 245.65 45.20L245.35 45.55Q241.80 45.55 237.93 45.60Q234.05 45.65 230.35 45.70Q226.65 45.75 223.65 45.80Q220.65 45.85 218.80 45.90Q216.95 45.95 216.80 45.95Q214.60 46 212.08 46.13Q209.55 46.25 207.05 46.25Z"/>
+            </svg>
+            <div class="section-title">STUDIO COLLECTION</div>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="collection-grid" id="products">
+        </div>
+</main>
+
+<div class="floating-bar">
+    <a href="https://www.instagram.com/ptmlaylaaa_?igsh=MWdraGRrYzJuaWx1bw==" class="float-btn ig" target="_blank">
+        <svg viewBox="0 0 24 24" class="icon"><path d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm10 2c1.66 0 3 1.34 3 3v10c0 1.66-1.34 3-3 3H7c-1.66 0-3-1.34-3-3V7c0-1.66 1.34-3 3-3h10zm-5 3a5 5 0 100 10 5 5 0 000-10zm0 2a3 3 0 110 6 3 3 0 010-6zm4.5-2.75a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5z"/></svg>
+    </a>
+    <a href="https://maps.app.goo.gl/nEJia2Ktm1WBqdfn8" class="float-btn loc" target="_blank">
+        <svg viewBox="0 0 24 24" class="icon"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>
+    </a>
+    <a href="https://wa.me/6283156512309" class="float-btn wa" target="_blank">
+        <svg viewBox="0 0 24 24" class="icon"><path d="M12 2a10 10 0 00-8.94 14.47L2 22l5.66-1.49A10 10 0 1012 2zm0 2a8 8 0 017.75 9.96c-.5 2.07-2.13 3.83-4.28 4.48l-.3.1-3.36.88.9-3.27-.2-.33A8 8 0 1112 4zm3.9 10.3c-.2-.1-1.2-.6-1.4-.7-.2-.1-.3-.1-.5.1-.1.2-.6.7-.7.8-.1.1-.2.1-.4 0s-.9-.3-1.7-1c-.6-.5-1-1.2-1.1-1.4-.1-.2 0-.3.1-.4.1-.1.2-.2.3-.3.1-.1.1-.2.2-.3.1-.1 0-.2 0-.3s-.5-1.3-.7-1.8c-.2-.5-.4-.4-.5-.4h-.4c-.1 0-.3.1-.5.3-.2.2-.7.7-.7 1.6s.7 1.9.8 2.1c.1.2 1.4 2.2 3.4 3 .5.2.9.3 1.2.4.5.2 1 .2 1.3.1.4-.1 1.2-.5 1.4-1 .2-.5.2-.9.1-1z"/></svg>
+    </a>
+</div>
+
+<footer id="mainFooter">
+    Fabeauty Nailart Premium • Soft Elegant Handmade © 2026
+</footer>
+
+<div id="previewModal" class="preview-modal" onclick="closePreview()">
+    <img id="previewImg" src="">
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script>
+// --- CONFIG FIREBASE ---
+const firebaseConfig = {
+    apiKey: "AIzaSyAI-wxaB9T6ts5W_LFGHTMh-LY4QEMOiMA",
+    authDomain: "ketul-cok.firebaseapp.com",
+    projectId: "ketul-cok",
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// --- ANIMASI LOGO & TEXT (OPTIMIZED) ---
+function runAnimations() {
+    const path = document.getElementById('logoPath');
+    const title = document.querySelector('.section-title');
+
+    function animateSVG() {
+    const oldPath = document.querySelector('.custom-path');
+
+    if (!oldPath || !oldPath.parentNode) return;
+
+    const newPath = oldPath.cloneNode(true);
+
+    newPath.style.animation = 'none';
+    newPath.style.strokeDashoffset = '2000';
+    newPath.style.fill = 'transparent';
+
+    oldPath.parentNode.replaceChild(newPath, oldPath);
+
+    void newPath.offsetWidth;
+
+    newPath.style.animation = `
+        drawSVG 4s ease-in-out forwards,
+        fillSVG 1.2s ease forwards 3.5s
+    `;
+
+    setTimeout(animateSVG, 6500);
+}
+
+
+    function animateText() {
+    const title = document.querySelector('.section-title');
+
+    // 1. Reset: Hapus class dan paksa browser menghitung ulang (reflow)
+    title.classList.remove('typing', 'done');
+    void title.offsetWidth; // Trik "magic" agar animasi bisa di-restart
+
+    // 2. Mulai Mengetik
+    title.classList.add('typing');
+
+    // 3. Setelah durasi mengetik selesai (3 detik sesuai CSS)
+    setTimeout(() => {
+        title.classList.remove('typing');
+        title.classList.add('done');
+
+        // 4. Beri waktu user membaca (misal 4 detik) sebelum menghilang dan ulang
+        setTimeout(() => {
+            // Animasi menghilang sejenak sebelum loop
+            title.style.transition = "opacity 0.5s";
+            title.style.opacity = "0";
+
+            setTimeout(() => {
+                title.style.opacity = "0.8";
+                animateText(); // Panggil fungsi ini lagi (Looping)
+            }, 500);
+
+        }, 4000); 
+
+    }, 3000); 
+}
+
+
+    animateSVG();
+    animateText();
+}
+
+// --- CATALOG MANAGEMENT ---
+function flipCard(card) {
+    card.classList.toggle('flip');
+}
+
+function loadCatalog() {
+    db.collection("products").orderBy("createdAt", "desc")
+    .onSnapshot(snapshot => {
+        const container = document.getElementById("products");
+        container.innerHTML = "";
+        snapshot.forEach(doc => {
+            const p = doc.data();
+            container.innerHTML += `
+                <div class="card" onclick="flipCard(this)">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="product-badge">${p.name}</div>
+                            <img src="${p.mediaUrl}" loading="lazy">
+                            <button class="btn-preview" onclick="openPreview(event, '${p.mediaUrl}')">Preview</button>
+                        </div>
+                        <div class="card-back">
+                            <div class="price">Rp. ${p.price}</div>
+                            <a href="https://wa.me/6283156512309?text=Halo%20kak,%20saya%20tertarik%20${encodeURIComponent(p.name)}" 
+                               target="_blank" class="btn-order" onclick="event.stopPropagation()">Pesan Sekarang</a>
+                        </div>
+                    </div>
+                </div>`;
+        });
+    });
+}
+
+// --- UI HELPERS ---
+function openPreview(e, url) {
+    e.stopPropagation();
+    const modal = document.getElementById("previewModal");
+    const img = document.getElementById("previewImg");
+    img.src = url;
+    modal.classList.add("active");
+}
+
+function closePreview() {
+    document.getElementById("previewModal").classList.remove("active");
+}
+
+// Scroll Effects
+window.addEventListener("scroll", () => {
+    const header = document.getElementById("mainHeader");
+    const footer = document.getElementById("mainFooter");
+    
+    if (window.scrollY > 20) header.classList.add("scrolled");
+    else header.classList.remove("scrolled");
+
+    const isBottom = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50;
+    if (isBottom) footer.classList.add("show");
+    else footer.classList.remove("show");
+});
+
+window.onload = () => {
+    runAnimations();
+    loadCatalog();
+};
+</script>
+
+</body>
+</html>
