@@ -2,7 +2,7 @@ const CACHE_NAME = "admin-cache-v1";
 
 const urlsToCache = [
   "/Fabeauty/admin/index.html",
-  "/repo/admin/",
+  "/Fabeauty/admin/",
 ];
 
 self.addEventListener("install", (event) => {
